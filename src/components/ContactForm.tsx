@@ -36,7 +36,6 @@ async function sendViaFormSubmit(payload: {
   const data = await res.json().catch(() => ({} as Record<string, string>));
   const message = String(data.message ?? "").toLowerCase();
 
-  // First-time setup: activation mail was sent to Outlook
   if (
     message.includes("activation") ||
     message.includes("activate form") ||
@@ -84,55 +83,20 @@ export default function ContactForm() {
     };
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, company: honeypot }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (data.ok) {
+      const result = await sendViaFormSubmit(payload);
+      if (result.ok) {
         setStatus("sent");
         setName("");
         setEmail("");
         setMessage("");
         return;
       }
-
-      if (data.fallback === "formsubmit" || data.error === "no_provider") {
-        const result = await sendViaFormSubmit(payload);
-        if (result.ok) {
-          setStatus("sent");
-          setName("");
-          setEmail("");
-          setMessage("");
-          return;
-        }
-        if (result.reason === "activation") {
-          setStatus("activation");
-          return;
-        }
+      if (result.reason === "activation") {
+        setStatus("activation");
+        return;
       }
-
       setStatus("error");
     } catch {
-      try {
-        const result = await sendViaFormSubmit(payload);
-        if (result.ok) {
-          setStatus("sent");
-          setName("");
-          setEmail("");
-          setMessage("");
-          return;
-        }
-        if (result.reason === "activation") {
-          setStatus("activation");
-          return;
-        }
-      } catch {
-        // ignore
-      }
       setStatus("error");
     }
   };
