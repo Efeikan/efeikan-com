@@ -22,7 +22,7 @@ export default function SkillsSection() {
     const { t } = useLang();
 
     return (
-        <section id="skills" className="section">
+        <section id="skills" className="section" aria-labelledby="skills-title">
             <div className="gradient-line" style={{ marginBottom: "100px" }} />
             <div className="container">
                 <motion.div
@@ -33,7 +33,7 @@ export default function SkillsSection() {
                     className="section-header"
                 >
                     <span className="section-label">&#9729;</span>
-                    <h2 className="section-title">{t.skills.sectionTitle}</h2>
+                    <h2 id="skills-title" className="section-title">{t.skills.sectionTitle}</h2>
                     <p className="section-subtitle">{t.skills.sectionSubtitle}</p>
                 </motion.div>
 

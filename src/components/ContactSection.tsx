@@ -43,7 +43,7 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="section">
+    <section id="contact" className="section" aria-labelledby="contact-title">
       <div className="gradient-line" style={{ marginBottom: "100px" }} />
       <div className="container">
         <motion.div
@@ -54,7 +54,7 @@ export default function ContactSection() {
           className="section-header"
         >
           <span className="section-label">&#9993;</span>
-          <h2 className="section-title">{t.contact.sectionTitle}</h2>
+          <h2 id="contact-title" className="section-title">{t.contact.sectionTitle}</h2>
           <p className="section-subtitle">{t.contact.sectionSubtitle}</p>
         </motion.div>
 

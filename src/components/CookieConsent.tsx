@@ -1,24 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 
 const STORAGE_KEY = "efe-cookie-consent";
 
+function readNeedsConsent(): boolean {
+  try {
+    return !localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return true;
+  }
+}
+
 export default function CookieConsent() {
   const { t } = useLang();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) setVisible(true);
-    } catch {
-      setVisible(true);
-    }
-  }, []);
+  const needsConsent = useSyncExternalStore(
+    () => () => {},
+    readNeedsConsent,
+    () => false
+  );
+  const [dismissed, setDismissed] = useState(false);
+  const visible = needsConsent && !dismissed;
 
   const choose = (value: "accepted" | "rejected") => {
     try {
@@ -26,7 +31,7 @@ export default function CookieConsent() {
     } catch {
       // ignore
     }
-    setVisible(false);
+    setDismissed(true);
   };
 
   return (
@@ -44,7 +49,7 @@ export default function CookieConsent() {
         >
           <div className="cookie-banner-inner">
             <div className="cookie-banner-icon">
-              <Cookie size={20} />
+              <Cookie size={20} aria-hidden />
             </div>
             <div className="cookie-banner-copy">
               <strong>{t.cookie.title}</strong>
@@ -55,6 +60,7 @@ export default function CookieConsent() {
                 type="button"
                 className="btn btn-ghost cookie-btn"
                 onClick={() => choose("rejected")}
+                aria-label={t.cookie.reject}
               >
                 {t.cookie.reject}
               </button>
@@ -62,6 +68,7 @@ export default function CookieConsent() {
                 type="button"
                 className="btn btn-primary cookie-btn"
                 onClick={() => choose("accepted")}
+                aria-label={t.cookie.accept}
               >
                 {t.cookie.accept}
               </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowDown, ChevronRight } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
@@ -10,6 +11,7 @@ export default function HeroSection() {
     return (
         <section
             id="home"
+            aria-labelledby="hero-name"
             style={{
                 minHeight: "100vh",
                 display: "flex",
@@ -83,6 +85,7 @@ export default function HeroSection() {
 
                 {/* Name */}
                 <motion.h1
+                    id="hero-name"
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.25 }}
@@ -93,7 +96,7 @@ export default function HeroSection() {
                         marginTop: "16px",
                         marginBottom: "8px",
                         background:
-                            "linear-gradient(135deg, #ffffff 0%, var(--accent) 50%, var(--accent-2) 100%)",
+                            "linear-gradient(135deg, var(--hero-name-from) 0%, var(--accent) 50%, var(--accent-2) 100%)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -142,10 +145,10 @@ export default function HeroSection() {
                     transition={{ duration: 0.6, delay: 0.7 }}
                     style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}
                 >
-                    <a href="/projects" className="btn btn-primary">
+                    <Link href="/projects" className="btn btn-primary">
                         {t.hero.cta}
-                        <ChevronRight size={18} />
-                    </a>
+                        <ChevronRight size={18} aria-hidden />
+                    </Link>
                     <a href="#about" className="btn btn-ghost">
                         {t.hero.ctaSecondary}
                     </a>
@@ -167,6 +170,7 @@ export default function HeroSection() {
                         animate={{ y: [0, 8, 0] }}
                         transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
                         style={{ color: "var(--text-muted)" }}
+                        aria-hidden
                     >
                         <ArrowDown size={20} />
                     </motion.div>

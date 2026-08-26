@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 type Lang = "tr" | "en";
 
@@ -9,8 +9,12 @@ interface Translations {
         home: string;
         about: string;
         projects: string;
+        blog: string;
         skills: string;
         contact: string;
+        skipToContent: string;
+        toggleMenu: string;
+        closeMenu: string;
     };
     hero: {
         greeting: string;
@@ -41,9 +45,17 @@ interface Translations {
         viewCode: string;
         viewLive: string;
         viewDetails: string;
+        viewAll: string;
         featured: string;
         backToProjects: string;
         overview: string;
+        architecture: string;
+        roleHeading: string;
+        challenges: string;
+        solution: string;
+        screenshots: string;
+        screenshotsHint: string;
+        screenshotSlot: string;
         features: string;
         related: string;
         techFilter: string;
@@ -79,6 +91,25 @@ interface Translations {
         formSuccess: string;
         formActivation: string;
         formError: string;
+        formRequired: string;
+        formEmailInvalid: string;
+        formCaptcha: string;
+    };
+    blog: {
+        sectionTitle: string;
+        sectionSubtitle: string;
+        backToBlog: string;
+        readMore: string;
+        empty: string;
+        published: string;
+    };
+    testimonials: {
+        sectionTitle: string;
+        sectionSubtitle: string;
+    };
+    theme: {
+        toggleLight: string;
+        toggleDark: string;
     };
     footer: {
         rights: string;
@@ -98,8 +129,12 @@ const translations: Record<Lang, Translations> = {
             home: "Ana Sayfa",
             about: "Hakkımda",
             projects: "Projelerimiz",
+            blog: "Blog",
             skills: "Yetenekler",
             contact: "İletişim",
+            skipToContent: "İçeriğe geç",
+            toggleMenu: "Menüyü aç",
+            closeMenu: "Menüyü kapat",
         },
         hero: {
             greeting: "Merhaba, ben",
@@ -130,10 +165,18 @@ const translations: Record<Lang, Translations> = {
             sectionSubtitle: "Güçlü sistemler, gerçek ürünler — detay için İncele",
             viewCode: "Kodu Gör",
             viewLive: "Canlı Gör",
-            viewDetails: "İncele",
+            viewDetails: "Detayları Gör",
+            viewAll: "Tüm projeler",
             featured: "Öne Çıkan",
             backToProjects: "Projelere Dön",
-            overview: "Genel Bakış",
+            overview: "Proje özeti",
+            architecture: "Teknoloji ve mimari",
+            roleHeading: "Rolüm ve sorumluluklarım",
+            challenges: "Teknik zorluklar ve çözümler",
+            solution: "Çözüm",
+            screenshots: "Ekran görüntüleri",
+            screenshotsHint: "Görseller yakında eklenecek — yer tutucu alanlar.",
+            screenshotSlot: "Görsel",
             features: "Öne Çıkan Özellikler",
             related: "Benzer Projeler",
             techFilter: "Teknoloji filtresi",
@@ -171,6 +214,25 @@ const translations: Record<Lang, Translations> = {
             formActivation:
                 "Aktivasyon maili efeikan@outlook.com adresine gitti. Outlook’ta “Activate Form” linkine tıkla, sonra tekrar gönder.",
             formError: "Gönderilemedi. Alanları kontrol edip tekrar dene.",
+            formRequired: "Bu alan zorunlu.",
+            formEmailInvalid: "Geçerli bir e-posta adresi gir.",
+            formCaptcha: "Lütfen doğrulamayı tamamla.",
+        },
+        blog: {
+            sectionTitle: "Blog",
+            sectionSubtitle: "Backend, veritabanı ve sistem notları",
+            backToBlog: "Bloga dön",
+            readMore: "Yazıyı oku",
+            empty: "Henüz yazı yok.",
+            published: "Yayın",
+        },
+        testimonials: {
+            sectionTitle: "Referanslar",
+            sectionSubtitle: "Birlikte çalıştığım ekiplerden notlar",
+        },
+        theme: {
+            toggleLight: "Açık temaya geç",
+            toggleDark: "Koyu temaya geç",
         },
         footer: {
             rights: "Tüm hakları saklıdır.",
@@ -190,8 +252,12 @@ const translations: Record<Lang, Translations> = {
             home: "Home",
             about: "About",
             projects: "Our Projects",
+            blog: "Blog",
             skills: "Skills",
             contact: "Contact",
+            skipToContent: "Skip to content",
+            toggleMenu: "Open menu",
+            closeMenu: "Close menu",
         },
         hero: {
             greeting: "Hi, I'm",
@@ -222,10 +288,18 @@ const translations: Record<Lang, Translations> = {
             sectionSubtitle: "Strong systems, real products — open a project to explore",
             viewCode: "View Code",
             viewLive: "View Live",
-            viewDetails: "Explore",
+            viewDetails: "View Details",
+            viewAll: "All projects",
             featured: "Featured",
             backToProjects: "Back to Projects",
-            overview: "Overview",
+            overview: "Project overview",
+            architecture: "Tech & architecture",
+            roleHeading: "Role & responsibilities",
+            challenges: "Challenges & solutions",
+            solution: "Solution",
+            screenshots: "Screenshots",
+            screenshotsHint: "Images will be added later — placeholder slots for now.",
+            screenshotSlot: "Image",
             features: "Key Features",
             related: "Related Projects",
             techFilter: "Tech filter",
@@ -263,6 +337,25 @@ const translations: Record<Lang, Translations> = {
             formActivation:
                 "Activation email sent to efeikan@outlook.com. Click “Activate Form” in Outlook, then submit again.",
             formError: "Could not send. Check the fields and try again.",
+            formRequired: "This field is required.",
+            formEmailInvalid: "Enter a valid email address.",
+            formCaptcha: "Please complete the verification.",
+        },
+        blog: {
+            sectionTitle: "Blog",
+            sectionSubtitle: "Notes on backend, databases, and systems",
+            backToBlog: "Back to blog",
+            readMore: "Read post",
+            empty: "No posts yet.",
+            published: "Published",
+        },
+        testimonials: {
+            sectionTitle: "References",
+            sectionSubtitle: "Notes from teams I've worked with",
+        },
+        theme: {
+            toggleLight: "Switch to light mode",
+            toggleDark: "Switch to dark mode",
         },
         footer: {
             rights: "All rights reserved.",
@@ -292,6 +385,12 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
     const [lang, setLang] = useState<Lang>("tr");
+
+    useEffect(() => {
+        document.documentElement.lang = lang;
+        document.documentElement.dataset.lang = lang;
+    }, [lang]);
+
     return (
         <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>
             {children}

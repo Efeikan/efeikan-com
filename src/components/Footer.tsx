@@ -9,6 +9,7 @@ export default function Footer() {
 
     return (
         <footer
+            role="contentinfo"
             style={{
                 borderTop: "1px solid var(--border)",
                 padding: "40px 24px",

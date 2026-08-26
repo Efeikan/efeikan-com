@@ -60,7 +60,7 @@ export default function StatsSection() {
   };
 
   return (
-    <section id="stats" className="section stats-section" ref={ref}>
+    <section id="stats" className="section stats-section" ref={ref} aria-labelledby="stats-title">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -70,7 +70,7 @@ export default function StatsSection() {
           className="section-header"
         >
           <span className="section-label">◈</span>
-          <h2 className="section-title">{t.stats.sectionTitle}</h2>
+          <h2 id="stats-title" className="section-title">{t.stats.sectionTitle}</h2>
           <p className="section-subtitle">{t.stats.sectionSubtitle}</p>
         </motion.div>
 
