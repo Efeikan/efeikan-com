@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, ImageIcon } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { Project, getRelatedProjects } from "@/data/projects";
 import ProjectMockup from "@/components/ProjectMockup";
+import ProjectCard from "@/components/ProjectCard";
 
 export default function ProjectDetail({ project }: { project: Project }) {
   const { t, lang } = useLang();
@@ -14,16 +15,21 @@ export default function ProjectDetail({ project }: { project: Project }) {
   const title = lang === "tr" ? project.titleTR : project.titleEN;
   const description =
     lang === "tr" ? project.longDescriptionTR : project.longDescriptionEN;
+  const architecture =
+    lang === "tr" ? project.architectureTR : project.architectureEN;
   const features = lang === "tr" ? project.featuresTR : project.featuresEN;
+  const responsibilities =
+    lang === "tr" ? project.responsibilitiesTR : project.responsibilitiesEN;
   const role = lang === "tr" ? project.roleTR : project.roleEN;
 
   return (
-    <main className="project-detail">
+    <main id="main" className="project-detail">
       <div
         className="project-detail-glow"
         style={{
           background: `radial-gradient(circle, ${project.accent}33, transparent 70%)`,
         }}
+        aria-hidden
       />
 
       <div className="container project-detail-inner">
@@ -33,7 +39,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
           transition={{ duration: 0.45 }}
         >
           <Link href="/projects" className="project-back">
-            <ArrowLeft size={16} />
+            <ArrowLeft size={16} aria-hidden />
             {t.projects.backToProjects}
           </Link>
         </motion.div>
@@ -74,6 +80,33 @@ export default function ProjectDetail({ project }: { project: Project }) {
               </Link>
             ))}
           </div>
+
+          <div className="project-detail-actions">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+                aria-label={`${title} ${t.projects.viewLive}`}
+              >
+                <ExternalLink size={16} aria-hidden />
+                {t.projects.viewLive}
+              </a>
+            )}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ghost"
+                aria-label={`${title} ${t.projects.viewCode}`}
+              >
+                <Github size={16} aria-hidden />
+                {t.projects.viewCode}
+              </a>
+            )}
+          </div>
         </motion.header>
 
         <motion.div
@@ -90,9 +123,28 @@ export default function ProjectDetail({ project }: { project: Project }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.15 }}
           className="glass-card project-detail-body"
+          aria-labelledby="project-overview"
         >
-          <h2>{t.projects.overview}</h2>
+          <h2 id="project-overview">{t.projects.overview}</h2>
           <p>{description}</p>
+
+          <h2 style={{ marginTop: 36 }}>{t.projects.architecture}</h2>
+          <p>{architecture}</p>
+
+          <h2 style={{ marginTop: 36 }}>{t.projects.roleHeading}</h2>
+          <p className="project-role-lead">{role}</p>
+          <ul className="project-feature-list">
+            {responsibilities.map((item) => (
+              <li key={item}>
+                <span
+                  className="project-feature-dot"
+                  style={{ background: project.accent }}
+                  aria-hidden
+                />
+                {item}
+              </li>
+            ))}
+          </ul>
 
           <h2 style={{ marginTop: 36 }}>{t.projects.features}</h2>
           <ul className="project-feature-list">
@@ -101,11 +153,53 @@ export default function ProjectDetail({ project }: { project: Project }) {
                 <span
                   className="project-feature-dot"
                   style={{ background: project.accent }}
+                  aria-hidden
                 />
                 {f}
               </li>
             ))}
           </ul>
+
+          <h2 style={{ marginTop: 36 }}>{t.projects.challenges}</h2>
+          <div className="challenge-list">
+            {project.challenges.map((c) => (
+              <article key={c.titleEN} className="challenge-card">
+                <h3>{lang === "tr" ? c.titleTR : c.titleEN}</h3>
+                <p>
+                  <span className="challenge-label">{t.projects.solution}: </span>
+                  {lang === "tr" ? c.solutionTR : c.solutionEN}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <h2 style={{ marginTop: 36 }}>{t.projects.screenshots}</h2>
+          <p className="screenshots-hint">{t.projects.screenshotsHint}</p>
+          <div className="screenshot-grid">
+            {project.screenshots.map((shot, i) => {
+              const alt = lang === "tr" ? shot.altTR : shot.altEN;
+              return (
+                <figure key={`${alt}-${i}`} className="screenshot-figure">
+                  {shot.src ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={shot.src} alt={alt} className="screenshot-img" />
+                  ) : (
+                    <div
+                      className="screenshot-placeholder"
+                      role="img"
+                      aria-label={alt}
+                    >
+                      <ImageIcon size={28} aria-hidden />
+                      <span>
+                        {t.projects.screenshotSlot} {i + 1}
+                      </span>
+                    </div>
+                  )}
+                  <figcaption>{alt}</figcaption>
+                </figure>
+              );
+            })}
+          </div>
         </motion.section>
 
         {related.length > 0 && (
@@ -114,31 +208,18 @@ export default function ProjectDetail({ project }: { project: Project }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.25 }}
             className="project-related"
+            aria-labelledby="related-projects"
           >
-            <h2 className="section-title" style={{ fontSize: "1.6rem" }}>
+            <h2
+              id="related-projects"
+              className="section-title"
+              style={{ fontSize: "1.6rem" }}
+            >
               {t.projects.related}
             </h2>
             <div className="projects-grid">
               {related.map((p) => (
-                <Link
-                  key={p.slug}
-                  href={`/projects/${p.slug}`}
-                  className="glass-card project-card project-card-link"
-                  style={{ ["--project-accent" as string]: p.accent }}
-                >
-                  <ProjectMockup project={p} compact />
-                  <span className="project-year">{p.year}</span>
-                  <h3 className="project-card-title">
-                    {lang === "tr" ? p.titleTR : p.titleEN}
-                  </h3>
-                  <p className="project-card-desc">
-                    {lang === "tr" ? p.descriptionTR : p.descriptionEN}
-                  </p>
-                  <div className="project-card-cta">
-                    <span>{t.projects.viewDetails}</span>
-                    <ArrowUpRight size={16} />
-                  </div>
-                </Link>
+                <ProjectCard key={p.slug} project={p} />
               ))}
             </div>
           </motion.section>

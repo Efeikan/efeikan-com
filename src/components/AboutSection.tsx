@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useLang } from "@/context/LanguageContext";
 import { Code2, Layers, Cpu, PawPrint, Users } from "lucide-react";
+import Link from "next/link";
 
 export default function AboutSection() {
     const { t, lang } = useLang();
@@ -20,6 +21,7 @@ export default function AboutSection() {
             bgColor: "rgba(0,212,255,0.08)",
             borderColor: "rgba(0,212,255,0.2)",
             name: "Pettag",
+            slug: "pettag",
             text: t.about.p2,
         },
         {
@@ -28,12 +30,13 @@ export default function AboutSection() {
             bgColor: "rgba(123,97,255,0.08)",
             borderColor: "rgba(123,97,255,0.2)",
             name: "FinderDev",
+            slug: "finderdev",
             text: t.about.p3,
         },
     ];
 
     return (
-        <section id="about" className="section">
+        <section id="about" className="section" aria-labelledby="about-title">
             <div className="gradient-line" style={{ marginBottom: "100px" }} />
             <div className="container">
 
@@ -46,7 +49,7 @@ export default function AboutSection() {
                     className="section-header"
                 >
                     <span className="section-label">&#9670;</span>
-                    <h2 className="section-title">{t.about.sectionTitle}</h2>
+                    <h2 id="about-title" className="section-title">{t.about.sectionTitle}</h2>
                 </motion.div>
 
                 {/* === INTRO BLOCK === */}
@@ -89,7 +92,7 @@ export default function AboutSection() {
                             pointerEvents: "none",
                         }}
                     >
-                        "
+                        &ldquo;
                     </div>
 
                     <p
@@ -119,18 +122,25 @@ export default function AboutSection() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.55, delay: 0.1 + i * 0.12 }}
-                                style={{
-                                    padding: "32px",
-                                    background: proj.bgColor,
-                                    border: `1px solid ${proj.borderColor}`,
-                                    borderRadius: "16px",
-                                    backdropFilter: "blur(10px)",
-                                    position: "relative",
-                                    overflow: "hidden",
-                                    transition: "transform 0.3s, box-shadow 0.3s",
-                                }}
                                 whileHover={{ y: -4, boxShadow: `0 20px 50px ${proj.bgColor}` }}
                             >
+                                <Link
+                                    href={`/projects/${proj.slug}`}
+                                    className="about-project-card"
+                                    style={{
+                                        padding: "32px",
+                                        background: proj.bgColor,
+                                        border: `1px solid ${proj.borderColor}`,
+                                        borderRadius: "16px",
+                                        backdropFilter: "blur(10px)",
+                                        position: "relative",
+                                        overflow: "hidden",
+                                        display: "block",
+                                        textDecoration: "none",
+                                        color: "inherit",
+                                        height: "100%",
+                                    }}
+                                >
                                 {/* Background watermark */}
                                 <div style={{
                                     position: "absolute",
@@ -173,9 +183,12 @@ export default function AboutSection() {
                                     position: "relative",
                                     zIndex: 1,
                                 }}>
-                                    {/* Remove "🐾 Pettag — " / "👨‍💻 FinderDev — " prefix since it's shown in header */}
                                     {proj.text.replace(/^.+?—\s*/, "")}
                                 </p>
+                                <span className="project-card-cta" style={{ marginTop: 16 }}>
+                                    {t.projects.viewDetails}
+                                </span>
+                                </Link>
                             </motion.div>
                         );
                     })}

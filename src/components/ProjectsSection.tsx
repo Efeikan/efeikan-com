@@ -1,28 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Star, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import {
   ProjectCategory,
   projectCategories,
   projects,
 } from "@/data/projects";
-import ProjectMockup from "@/components/ProjectMockup";
+import ProjectCard from "@/components/ProjectCard";
 
 export default function ProjectsSection() {
   const { t, lang } = useLang();
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [active, setActive] = useState<ProjectCategory>("all");
-  const [tech, setTech] = useState<string | null>(null);
-
-  useEffect(() => {
-    const q = searchParams.get("tech");
-    if (q) setTech(q);
-  }, [searchParams]);
+  const tech = searchParams.get("tech");
 
   const allTags = useMemo(() => {
     const set = new Set<string>();
@@ -38,12 +34,20 @@ export default function ProjectsSection() {
     });
   }, [active, tech]);
 
+  const setTech = (next: string | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (next) params.set("tech", next);
+    else params.delete("tech");
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
+
   const toggleTech = (tag: string) => {
-    setTech((prev) => (prev === tag ? null : tag));
+    setTech(tech === tag ? null : tag);
   };
 
   return (
-    <section id="projects" className="section">
+    <section id="projects" className="section" aria-labelledby="projects-title">
       <div className="gradient-line" style={{ marginBottom: "100px" }} />
       <div className="container">
         <motion.div
@@ -53,8 +57,12 @@ export default function ProjectsSection() {
           transition={{ duration: 0.6 }}
           className="section-header"
         >
-          <span className="section-label">&#10022;</span>
-          <h2 className="section-title">{t.projects.sectionTitle}</h2>
+          <span className="section-label" aria-hidden>
+            &#10022;
+          </span>
+          <h2 id="projects-title" className="section-title">
+            {t.projects.sectionTitle}
+          </h2>
           <p className="section-subtitle">{t.projects.sectionSubtitle}</p>
         </motion.div>
 
@@ -98,7 +106,7 @@ export default function ProjectsSection() {
                 className="tech-filter-clear"
                 onClick={() => setTech(null)}
               >
-                <X size={12} />
+                <X size={12} aria-hidden />
                 {t.projects.clearFilter}
               </button>
             )}
@@ -136,63 +144,11 @@ export default function ProjectsSection() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: i * 0.05 }}
                 >
-                  <Link
-                    href={`/projects/${project.slug}`}
-                    className="glass-card project-card project-card-link"
-                    style={{ ["--project-accent" as string]: project.accent }}
-                  >
-                    <ProjectMockup project={project} compact />
-
-                    <div className="project-card-top">
-                      <span className="project-year">{project.year}</span>
-                      {project.featured && (
-                        <span className="featured-badge">
-                          <Star size={10} />
-                          {t.projects.featured}
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="project-card-title">
-                      {lang === "tr" ? project.titleTR : project.titleEN}
-                    </h3>
-
-                    <p className="project-card-desc">
-                      {lang === "tr"
-                        ? project.descriptionTR
-                        : project.descriptionEN}
-                    </p>
-
-                    <div className="project-tags">
-                      {project.tags.slice(0, 4).map((tag) => (
-                        <span
-                          key={tag}
-                          className={`project-tag${tech === tag ? " active" : ""}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleTech(tag);
-                          }}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              toggleTech(tag);
-                            }
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="project-card-cta">
-                      <span>{t.projects.viewDetails}</span>
-                      <ArrowUpRight size={16} />
-                    </div>
-                  </Link>
+                  <ProjectCard
+                    project={project}
+                    activeTech={tech}
+                    onTechClick={toggleTech}
+                  />
                 </motion.div>
               ))
             )}
