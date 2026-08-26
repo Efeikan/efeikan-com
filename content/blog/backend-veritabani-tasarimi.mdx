@@ -1,0 +1,61 @@
+---
+titleTR: "Backend'de Veritabanı Tasarımı: Şema, İndeks ve Tutarlılık"
+titleEN: "Database Design on the Backend: Schema, Indexes, and Consistency"
+excerptTR: "Ölçeklenebilir bir API'nin temeli şemadır. Bu taslak yazıda bounded context, indeks seçimi ve tutarlılık modellerine pratik bir bakış var."
+excerptEN: "A scalable API starts with the schema. This draft looks at bounded contexts, index choices, and consistency models in practice."
+date: "2026-08-20"
+tags:
+  - PostgreSQL
+  - Backend
+  - Database
+contentEN: |
+  ## Why schema comes first
+
+  An API that looks fast on day one often breaks when traffic and product rules grow together. Most of that pain is not "the framework" — it is a data model that never encoded the real invariants.
+
+  ### Bounded contexts
+
+  Split the domain before you split the services. Auth, billing, and the core product rarely belong in one wide table. Explicit foreign keys and a clear aggregate root keep writes small and reviews readable.
+
+  ### Indexes are a product decision
+
+  Every index speeds up one access path and slows down writes. For list endpoints, design the query first (`WHERE status = ? ORDER BY created_at DESC`), then add a matching composite index. Avoid indexing "just in case."
+
+  ### Consistency without dogma
+
+  Money and inventory want a transaction. Feeds and counters can be eventually consistent. Name the model in the API contract so the client does not invent a stronger guarantee than you provide.
+
+  ### A checklist I keep
+
+  1. What is the write unit (one transaction, one aggregate)?
+  2. Which fields are unique, and is uniqueness per tenant?
+  3. Can this query use an index, or will it scan?
+  4. What happens if the same request is sent twice (idempotency)?
+
+  This post is a draft to verify the MDX pipeline — I will expand the examples (Pettag / FinderDev schema notes) in a later revision.
+---
+
+## Şema neden önce gelir?
+
+İlk günde hızlı görünen bir API, trafik ve ürün kuralları birlikte büyüyünce çoğu zaman şemadan kırılır. Asıl maliyet framework seçimi değil; gerçeği hiç kodlamamış bir veri modelidir.
+
+### Bounded context
+
+Servisleri ayırmadan önce domain'i ayırın. Auth, faturalama ve asıl ürün nadiren tek geniş tabloda yaşamalı. Açık foreign key'ler ve net bir aggregate root, yazıları küçük, review'ları okunabilir tutar.
+
+### İndeks bir ürün kararıdır
+
+Her indeks bir okuma yolunu hızlandırır, yazmayı yavaşlatır. Liste endpoint'leri için önce sorguyu yazın (`WHERE status = ? ORDER BY created_at DESC`), sonra buna uyan bileşik indeksi ekleyin. "Belki lazım olur" indeksi eklemeyin.
+
+### Dogmasız tutarlılık
+
+Para ve stok transaction ister. Feed ve sayaçlar eventually consistent olabilir. Modeli API sözleşmesinde adlandırın; istemci sizin vermediğiniz bir garantiyi uydurmasın.
+
+### Kendi kontrol listem
+
+1. Yazma birimi nedir (tek transaction, tek aggregate)?
+2. Hangi alanlar unique, uniqueness tenant bazlı mı?
+3. Bu sorgu indeksi kullanır mı, yoksa tarama mı yapar?
+4. Aynı istek iki kez gelirse ne olur (idempotency)?
+
+Bu yazı MDX altyapısını doğrulamak için bir taslaktır — Pettag / FinderDev şema notlarını sonraki revizyonda genişleteceğim.
