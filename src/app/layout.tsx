@@ -6,6 +6,7 @@ import ClientShell from "@/components/ClientShell";
 import ThemeProvider from "@/components/ThemeProvider";
 import SkipLink from "@/components/SkipLink";
 import {
+  GA_MEASUREMENT_ID,
   SITE_DESCRIPTION_TR,
   SITE_KEYWORDS,
   SITE_NAME,
@@ -79,6 +80,20 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
+        />
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}');
+            `,
+          }}
         />
       </head>
       <body>
