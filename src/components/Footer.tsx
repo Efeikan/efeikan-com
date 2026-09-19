@@ -1,67 +1,104 @@
 "use client";
 
+import Link from "next/link";
+import { Github, Heart, Linkedin, Mail } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
-import { Heart } from "lucide-react";
+import { SOCIAL } from "@/lib/site";
+import BackToTop from "@/components/BackToTop";
 
 export default function Footer() {
-    const { t } = useLang();
-    const year = new Date().getFullYear();
+  const { t } = useLang();
+  const year = new Date().getFullYear();
 
-    return (
-        <footer
-            role="contentinfo"
-            style={{
-                borderTop: "1px solid var(--border)",
-                padding: "40px 24px",
-                textAlign: "center",
-                position: "relative",
-                zIndex: 1,
-            }}
-        >
-            {/* Gradient top accent */}
-            <div
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: "200px",
-                    height: "1px",
-                    background: "linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent)",
-                }}
-            />
+  const quickLinks = [
+    { href: "/#home", label: t.nav.home },
+    { href: "/#about", label: t.nav.about },
+    { href: "/projects", label: t.nav.projects },
+    { href: "/#skills", label: t.nav.skills },
+    { href: "/#contact", label: t.nav.contact },
+  ];
 
-            <div
-                className="font-orbitron"
-                style={{
-                    fontSize: "1rem",
-                    letterSpacing: "3px",
-                    background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    marginBottom: "12px",
-                }}
-            >
-                EFE İKAN
+  const socials = [
+    {
+      href: SOCIAL.linkedin,
+      label: t.contact.linkedinLabel,
+      icon: Linkedin,
+      external: true,
+    },
+    {
+      href: SOCIAL.github,
+      label: t.contact.githubLabel,
+      icon: Github,
+      external: true,
+    },
+    {
+      href: `mailto:${SOCIAL.email}`,
+      label: t.contact.emailLabel,
+      icon: Mail,
+      external: false,
+    },
+  ];
+
+  return (
+    <>
+      <footer className="site-footer" role="contentinfo">
+        <div className="site-footer-accent" aria-hidden />
+
+        <div className="container site-footer-grid">
+          <div className="site-footer-brand">
+            <Link href="/#home" className="font-orbitron site-footer-logo">
+              EFE İKAN
+            </Link>
+            <p className="site-footer-tagline">{t.footer.tagline}</p>
+          </div>
+
+          <nav className="site-footer-nav" aria-label={t.footer.quickLinks}>
+            <p className="site-footer-col-title">{t.footer.quickLinks}</p>
+            <ul className="site-footer-links">
+              {quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href}>{link.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="site-footer-social-col">
+            <p className="site-footer-cta">{t.footer.cta}</p>
+            <p className="site-footer-col-title">{t.footer.connect}</p>
+            <div className="site-footer-socials">
+              {socials.map(({ href, label, icon: Icon, external }) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="site-footer-social"
+                  aria-label={label}
+                  title={label}
+                  {...(external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  <Icon size={18} aria-hidden />
+                </a>
+              ))}
             </div>
+            <a href={`mailto:${SOCIAL.email}`} className="site-footer-email">
+              {SOCIAL.email}
+            </a>
+          </div>
+        </div>
 
-            <p
-                style={{
-                    color: "var(--text-muted)",
-                    fontSize: "0.82rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                }}
-            >
-                © {year} Efe İkan — {t.footer.rights}
-                <span style={{ margin: "0 4px", display: "inline-flex", alignItems: "center" }}>
-                    <Heart size={12} color="#ff6b6b" fill="#ff6b6b" />
-                </span>
-                {t.footer.builtWith}
-            </p>
-        </footer>
-    );
+        <div className="container site-footer-bottom">
+          <p className="site-footer-copy">
+            © {year} Efe İkan — {t.footer.rights}
+            <span className="site-footer-heart" aria-hidden>
+              <Heart size={12} color="#ff6b6b" fill="#ff6b6b" />
+            </span>
+            {t.footer.builtWith}
+          </p>
+        </div>
+      </footer>
+      <BackToTop />
+    </>
+  );
 }

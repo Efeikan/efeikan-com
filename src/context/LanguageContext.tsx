@@ -114,6 +114,11 @@ interface Translations {
     footer: {
         rights: string;
         builtWith: string;
+        tagline: string;
+        quickLinks: string;
+        connect: string;
+        cta: string;
+        backToTop: string;
     };
     cookie: {
         title: string;
@@ -237,11 +242,16 @@ const translations: Record<Lang, Translations> = {
         footer: {
             rights: "Tüm hakları saklıdır.",
             builtWith: "Next.js ile oluşturuldu",
+            tagline: "Backend, sistem mimarisi ve ölçeklenebilir ürünler.",
+            quickLinks: "Hızlı linkler",
+            connect: "İletişim",
+            cta: "Yeni projelere ve fırsatlara açığım.",
+            backToTop: "Yukarı çık",
         },
         cookie: {
             title: "Çerez tercihi",
             description:
-                "Deneyimi iyileştirmek için gerekli çerezleri kullanıyoruz. Devam ederek çerez politikamızı kabul etmiş olursun.",
+                "Sitenin nasıl kullanıldığını anlamak için Google Analytics çerezleri kullanıyoruz. İstersen reddedebilirsin.",
             accept: "Kabul et",
             reject: "Reddet",
         },
@@ -360,11 +370,16 @@ const translations: Record<Lang, Translations> = {
         footer: {
             rights: "All rights reserved.",
             builtWith: "Built with Next.js",
+            tagline: "Backend, system architecture, and scalable products.",
+            quickLinks: "Quick links",
+            connect: "Connect",
+            cta: "Open to new projects and opportunities.",
+            backToTop: "Back to top",
         },
         cookie: {
             title: "Cookie preference",
             description:
-                "We use essential cookies to improve your experience. By continuing, you accept our cookie policy.",
+                "We use Google Analytics cookies to understand how the site is used. You can decline if you prefer.",
             accept: "Accept",
             reject: "Reject",
         },

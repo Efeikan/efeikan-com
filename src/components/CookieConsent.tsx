@@ -4,33 +4,29 @@ import { useState, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
-
-const STORAGE_KEY = "efe-cookie-consent";
+import {
+  getConsent,
+  setConsent,
+  subscribeConsent,
+  type ConsentValue,
+} from "@/lib/consent";
 
 function readNeedsConsent(): boolean {
-  try {
-    return !localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return true;
-  }
+  return getConsent() === null;
 }
 
 export default function CookieConsent() {
   const { t } = useLang();
   const needsConsent = useSyncExternalStore(
-    () => () => {},
+    subscribeConsent,
     readNeedsConsent,
     () => false
   );
   const [dismissed, setDismissed] = useState(false);
   const visible = needsConsent && !dismissed;
 
-  const choose = (value: "accepted" | "rejected") => {
-    try {
-      localStorage.setItem(STORAGE_KEY, value);
-    } catch {
-      // ignore
-    }
+  const choose = (value: ConsentValue) => {
+    setConsent(value);
     setDismissed(true);
   };
 

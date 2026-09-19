@@ -1,6 +1,9 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://efeikan.com";
 
+export const GA_MEASUREMENT_ID =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-NFX4645191";
+
 export const SITE_NAME = "Efe İkan";
 
 export const SITE_TITLE = "Efe İkan | Software Developer";

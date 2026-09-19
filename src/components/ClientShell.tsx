@@ -2,6 +2,7 @@
 
 import SplashScreen from "@/components/SplashScreen";
 import CookieConsent from "@/components/CookieConsent";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export default function ClientShell({
   children,
@@ -13,6 +14,7 @@ export default function ClientShell({
       <SplashScreen />
       {children}
       <CookieConsent />
+      <GoogleAnalytics />
     </>
   );
 }

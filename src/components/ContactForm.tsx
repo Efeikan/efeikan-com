@@ -186,7 +186,6 @@ export default function ContactForm() {
       noValidate
     >
       <h3 className="contact-form-title">{t.contact.formTitle}</h3>
-      <p className="contact-form-sub">{t.contact.formSubtitle}</p>
 
       <label className="contact-honeypot" aria-hidden="true">
         Company
